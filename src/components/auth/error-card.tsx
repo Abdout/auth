@@ -1,3 +1,4 @@
+'use client';
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 import { CardWrapper } from "@/components/auth/card-wrapper";
