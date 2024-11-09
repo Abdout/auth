@@ -1,13 +1,20 @@
 import { currentRole } from "@/lib/auth";
-import { UserRole } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const role = await currentRole();
+  try {
+    const role = await currentRole();
 
-  if (role === UserRole.ADMIN) {
-    return new NextResponse(null, { status: 200 });
+    // Dynamically import UserRole inside the function
+    const { UserRole } = await import("@prisma/client");
+
+    if (role === UserRole.ADMIN) {
+      return NextResponse.json({ message: "Access granted" }, { status: 200 });
+    }
+
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  } catch (error) {
+    console.error("Error in /api/admin:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
-
-  return new NextResponse(null, { status: 403 });
 }
